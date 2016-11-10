@@ -45,6 +45,8 @@ import org.kaazing.k3po.lang.internal.ast.AstChildOpenedNode;
 import org.kaazing.k3po.lang.internal.ast.AstCloseNode;
 import org.kaazing.k3po.lang.internal.ast.AstClosedNode;
 import org.kaazing.k3po.lang.internal.ast.AstCommandNode;
+import org.kaazing.k3po.lang.internal.ast.AstCommentNode;
+import org.kaazing.k3po.lang.internal.ast.AstCommentStreamableNode;
 import org.kaazing.k3po.lang.internal.ast.AstConnectNode;
 import org.kaazing.k3po.lang.internal.ast.AstConnectedNode;
 import org.kaazing.k3po.lang.internal.ast.AstDisconnectNode;
@@ -106,6 +108,8 @@ import org.kaazing.k3po.lang.parser.v2.RobotParser.ChildOpenedNodeContext;
 import org.kaazing.k3po.lang.parser.v2.RobotParser.CloseNodeContext;
 import org.kaazing.k3po.lang.parser.v2.RobotParser.ClosedNodeContext;
 import org.kaazing.k3po.lang.parser.v2.RobotParser.CommandNodeContext;
+import org.kaazing.k3po.lang.parser.v2.RobotParser.CommentNodeContext;
+import org.kaazing.k3po.lang.parser.v2.RobotParser.CommentStreamableNodeContext;
 import org.kaazing.k3po.lang.parser.v2.RobotParser.ConnectNodeContext;
 import org.kaazing.k3po.lang.parser.v2.RobotParser.ConnectedNodeContext;
 import org.kaazing.k3po.lang.parser.v2.RobotParser.DisconnectNodeContext;
@@ -871,6 +875,15 @@ public abstract class ScriptParseStrategy<T extends AstRegion> {
             return connectNode;
         }
 
+        @Override
+        public AstCommentNode visitCommentNode(CommentNodeContext ctx) {
+            AstCommentNodeVisitor visitor = new AstCommentNodeVisitor(elFactory, elContext);
+            AstCommentNode commentNode = visitor.visitCommentNode(ctx);
+            if (commentNode != null) {
+                childInfos().add(commentNode.getRegionInfo());
+            }
+            return commentNode;
+        }
     }
 
     private static class AstAcceptNodeVisitor extends AstNodeVisitor<AstAcceptNode> {
@@ -1072,6 +1085,15 @@ public abstract class ScriptParseStrategy<T extends AstRegion> {
             return optionNode;
         }
 
+        @Override
+        public AstCommentStreamableNode visitCommentStreamableNode(CommentStreamableNodeContext ctx) {
+            AstCommentStreamableNodeVisitor visitor = new AstCommentStreamableNodeVisitor(elFactory, elContext);
+            AstCommentStreamableNode commentNode = visitor.visitCommentStreamableNode(ctx);
+            if (commentNode != null) {
+                childInfos().add(commentNode.getRegionInfo());
+            }
+            return commentNode;
+        }
     }
 
     private static class AstOptionNodeVisitor extends AstNodeVisitor<AstOptionNode> {
@@ -1597,6 +1619,38 @@ public abstract class ScriptParseStrategy<T extends AstRegion> {
         @Override
         public AstCloseNode visitCloseNode(CloseNodeContext ctx) {
             node = new AstCloseNode();
+            node.setRegionInfo(asSequentialRegion(childInfos, ctx));
+            return node;
+        }
+
+    }
+
+    private static class AstCommentNodeVisitor extends AstNodeVisitor<AstCommentNode> {
+
+        public AstCommentNodeVisitor(ExpressionFactory elFactory, ExpressionContext elContext) {
+            super(elFactory, elContext);
+        }
+
+        @Override
+        public AstCommentNode visitCommentNode(CommentNodeContext ctx) {
+            node = new AstCommentNode();
+            node.setCommentText(ctx.getText());
+            node.setRegionInfo(asSequentialRegion(childInfos, ctx));
+            return node;
+        }
+
+    }
+
+    private static class AstCommentStreamableNodeVisitor extends AstNodeVisitor<AstCommentStreamableNode> {
+
+        public AstCommentStreamableNodeVisitor(ExpressionFactory elFactory, ExpressionContext elContext) {
+            super(elFactory, elContext);
+        }
+
+        @Override
+        public AstCommentStreamableNode visitCommentStreamableNode(CommentStreamableNodeContext ctx) {
+            node = new AstCommentStreamableNode();
+            node.setCommentText(ctx.getText());
             node.setRegionInfo(asSequentialRegion(childInfos, ctx));
             return node;
         }

@@ -26,6 +26,7 @@ import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.Token;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kaazing.k3po.lang.parser.v2.RobotLexer;
 
@@ -61,6 +62,7 @@ public class RobotScriptLexerTest {
                 token.getType());
     }
 
+    @Ignore("Comments are not skipped anymore")
     @Test
     public void shouldSkipLineComment() throws Exception {
 

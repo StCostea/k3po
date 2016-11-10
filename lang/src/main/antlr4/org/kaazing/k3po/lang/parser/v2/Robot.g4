@@ -10,7 +10,8 @@ grammar Robot;
 // handle scripts which are comprised of nothing but empty lines and comments.
 
 scriptNode
-    : (propertyNode | streamNode)* EOF
+    : (propertyNode | streamNode)* 
+      EOF
     ;
 
 propertyNode
@@ -29,6 +30,7 @@ streamNode
     : acceptNode
     | acceptableNode
     | connectNode
+    | commentNode
     ;
 
 acceptNode
@@ -57,11 +59,20 @@ connectNode
         streamableNode+
     ;
 
+commentNode
+	: k=LineComment
+	;
+
+commentStreamableNode
+	: k=LineComment
+	;
+
 serverStreamableNode
     : barrierNode 
     | serverEventNode
     | serverCommandNode
     | optionNode
+    | commentStreamableNode
     ;
     
 optionNode 
@@ -116,6 +127,7 @@ streamableNode
     | eventNode
     | commandNode
     | optionNode
+    | commentStreamableNode
     ;
 
 commandNode
@@ -690,4 +702,4 @@ Letter
 WS    : (' ' | '\r' | '\n' | '\t' | '\u000C')+ -> skip;
 
 LineComment
-    : '#' ~('\n' | '\r')* '\r'? '\n' -> skip;
+    : '#' ~('\n' | '\r')* '\r'? '\n';
