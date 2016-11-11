@@ -28,6 +28,8 @@ import org.kaazing.k3po.lang.internal.ast.AstChildClosedNode;
 import org.kaazing.k3po.lang.internal.ast.AstChildOpenedNode;
 import org.kaazing.k3po.lang.internal.ast.AstCloseNode;
 import org.kaazing.k3po.lang.internal.ast.AstClosedNode;
+import org.kaazing.k3po.lang.internal.ast.AstCommentNode;
+import org.kaazing.k3po.lang.internal.ast.AstCommentStreamableNode;
 import org.kaazing.k3po.lang.internal.ast.AstConnectNode;
 import org.kaazing.k3po.lang.internal.ast.AstConnectedNode;
 import org.kaazing.k3po.lang.internal.ast.AstDisconnectNode;
@@ -346,6 +348,18 @@ public class InjectBarriersVisitor implements AstNode.Visitor<AstScriptNode, Sta
         default:
             break;
         }
+    }
+
+    @Override
+    public AstScriptNode visit(AstCommentNode node, State parameter) throws Exception {
+        // for the moment comments are ignored
+        return null;
+    }
+
+    @Override
+    public AstScriptNode visit(AstCommentStreamableNode node, State parameter) throws Exception {
+        // for the moment comments are ignored
+        return null;
     }
 
 }

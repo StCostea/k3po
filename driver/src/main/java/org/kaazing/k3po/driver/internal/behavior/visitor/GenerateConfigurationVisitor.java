@@ -121,6 +121,8 @@ import org.kaazing.k3po.lang.internal.ast.AstChildClosedNode;
 import org.kaazing.k3po.lang.internal.ast.AstChildOpenedNode;
 import org.kaazing.k3po.lang.internal.ast.AstCloseNode;
 import org.kaazing.k3po.lang.internal.ast.AstClosedNode;
+import org.kaazing.k3po.lang.internal.ast.AstCommentNode;
+import org.kaazing.k3po.lang.internal.ast.AstCommentStreamableNode;
 import org.kaazing.k3po.lang.internal.ast.AstConnectNode;
 import org.kaazing.k3po.lang.internal.ast.AstConnectedNode;
 import org.kaazing.k3po.lang.internal.ast.AstDisconnectNode;
@@ -1259,6 +1261,18 @@ public class GenerateConfigurationVisitor implements AstNode.Visitor<Configurati
             return Masker.IDENTITY_MASKER;
         }
 
+    }
+
+    @Override
+    public Configuration visit(AstCommentNode node, State parameter) throws Exception {
+        // For the moment, ignore the comment node
+        return null;
+    }
+
+    @Override
+    public Configuration visit(AstCommentStreamableNode node, State parameter) throws Exception {
+        // For the moment, ignore the comment node
+        return null;
     }
 
 }

@@ -17,41 +17,16 @@ package org.kaazing.k3po.lang.internal.ast;
 
 import static org.kaazing.k3po.lang.internal.ast.util.AstUtil.equivalent;
 
-import javax.el.ELContext;
-
-import org.kaazing.k3po.lang.internal.ast.value.AstLocation;
-
 public class AstCommentStreamableNode extends AstStreamableNode {
 
     private String commentText;
-
-    private AstLocation location;
-    private ELContext environment;
 
     public AstCommentStreamableNode() {
     }
 
     public AstCommentStreamableNode(AstCommentStreamableNode acceptNode) {
         this.regionInfo = acceptNode.regionInfo;
-        this.location = acceptNode.location;
-        this.environment = acceptNode.environment;
         this.commentText = acceptNode.commentText;
-    }
-
-    public AstLocation getLocation() {
-        return location;
-    }
-
-    public void setLocation(AstLocation location) {
-        this.location = location;
-    }
-
-    public ELContext getEnvironment() {
-        return environment;
-    }
-
-    public void setEnvironment(ELContext expressionContext) {
-        this.environment = expressionContext;
     }
 
     public String getCommentText() {
@@ -65,16 +40,6 @@ public class AstCommentStreamableNode extends AstStreamableNode {
     @Override
     protected int hashTo() {
         int hashCode = getClass().hashCode();
-
-        if (location != null) {
-            hashCode <<= 4;
-            hashCode ^= location.hashCode();
-        }
-
-        if (environment != null) {
-            hashCode <<= 4;
-            hashCode ^= environment.hashCode();
-        }
 
         if (commentText != null) {
             hashCode <<= 4;
@@ -90,15 +55,12 @@ public class AstCommentStreamableNode extends AstStreamableNode {
     }
 
     protected boolean equalTo(AstCommentStreamableNode that) {
-        return equivalent(this.location, that.location)
-                && equivalent(this.commentText, that.commentText);
+        return equivalent(this.commentText, that.commentText);
  }
 
     @Override
     public <R, P> R accept(Visitor<R, P> visitor, P parameter) throws Exception {
-
-//        return visitor.visit(this, parameter);
-        return null;
+        return visitor.visit(this, parameter);
     }
 
     @Override

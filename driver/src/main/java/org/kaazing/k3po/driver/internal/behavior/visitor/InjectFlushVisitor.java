@@ -27,6 +27,8 @@ import org.kaazing.k3po.lang.internal.ast.AstChildClosedNode;
 import org.kaazing.k3po.lang.internal.ast.AstChildOpenedNode;
 import org.kaazing.k3po.lang.internal.ast.AstCloseNode;
 import org.kaazing.k3po.lang.internal.ast.AstClosedNode;
+import org.kaazing.k3po.lang.internal.ast.AstCommentNode;
+import org.kaazing.k3po.lang.internal.ast.AstCommentStreamableNode;
 import org.kaazing.k3po.lang.internal.ast.AstConnectNode;
 import org.kaazing.k3po.lang.internal.ast.AstConnectedNode;
 import org.kaazing.k3po.lang.internal.ast.AstDisconnectNode;
@@ -359,6 +361,18 @@ public class InjectFlushVisitor implements AstNode.Visitor<AstScriptNode, State>
     @Override
     public AstScriptNode visit(AstWriteOptionNode node, State state) throws Exception {
         state.streamables.add(node);
+        return null;
+    }
+
+    @Override
+    public AstScriptNode visit(AstCommentNode node, State parameter) throws Exception {
+        // For the moment, ignore the comment node
+        return null;
+    }
+
+    @Override
+    public AstScriptNode visit(AstCommentStreamableNode node, State parameter) throws Exception {
+        // For the moment, ignore the comment node
         return null;
     }
 }

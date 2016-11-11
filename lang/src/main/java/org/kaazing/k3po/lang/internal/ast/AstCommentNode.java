@@ -17,46 +17,16 @@ package org.kaazing.k3po.lang.internal.ast;
 
 import static org.kaazing.k3po.lang.internal.ast.util.AstUtil.equivalent;
 
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import javax.el.ELContext;
-
-import org.kaazing.k3po.lang.internal.ast.value.AstLocation;
-
 public class AstCommentNode extends AstStreamNode {
 
     private String commentText;
-
-    private AstLocation location;
-    private ELContext environment;
 
     public AstCommentNode() {
     }
 
     public AstCommentNode(AstCommentNode acceptNode) {
         this.regionInfo = acceptNode.regionInfo;
-        this.location = acceptNode.location;
-        this.environment = acceptNode.environment;
         this.commentText = acceptNode.commentText;
-    }
-
-    public AstLocation getLocation() {
-        return location;
-    }
-
-    public void setLocation(AstLocation location) {
-        this.location = location;
-    }
-
-    public ELContext getEnvironment() {
-        return environment;
-    }
-
-    public void setEnvironment(ELContext expressionContext) {
-        this.environment = expressionContext;
     }
 
     public String getCommentText() {
@@ -70,16 +40,6 @@ public class AstCommentNode extends AstStreamNode {
     @Override
     protected int hashTo() {
         int hashCode = super.hashTo();
-
-        if (location != null) {
-            hashCode <<= 4;
-            hashCode ^= location.hashCode();
-        }
-
-        if (environment != null) {
-            hashCode <<= 4;
-            hashCode ^= environment.hashCode();
-        }
 
         if (commentText != null) {
             hashCode <<= 4;
@@ -95,15 +55,12 @@ public class AstCommentNode extends AstStreamNode {
     }
 
     protected boolean equalTo(AstCommentNode that) {
-        return super.equalTo(that) && equivalent(this.location, that.location)
-                && equivalent(this.commentText, that.commentText);
+        return super.equalTo(that) && equivalent(this.commentText, that.commentText);
  }
 
     @Override
     public <R, P> R accept(Visitor<R, P> visitor, P parameter) throws Exception {
-
-//        return visitor.visit(this, parameter);
-        return null;
+        return visitor.visit(this, parameter);
     }
 
     @Override
@@ -115,7 +72,5 @@ public class AstCommentNode extends AstStreamNode {
     protected void describeLine(StringBuilder sb) {
         super.describeLine(sb);
         sb.append(commentText);
-//        sb.append('\n');
     }
-
 }

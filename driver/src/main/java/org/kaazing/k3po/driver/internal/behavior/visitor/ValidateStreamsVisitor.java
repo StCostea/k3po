@@ -15,6 +15,7 @@
  */
 package org.kaazing.k3po.driver.internal.behavior.visitor;
 
+import org.kaazing.k3po.driver.internal.behavior.visitor.InjectFlushVisitor.State;
 import org.kaazing.k3po.lang.internal.ast.AstAbortNode;
 import org.kaazing.k3po.lang.internal.ast.AstAbortedNode;
 import org.kaazing.k3po.lang.internal.ast.AstAcceptNode;
@@ -24,6 +25,8 @@ import org.kaazing.k3po.lang.internal.ast.AstChildClosedNode;
 import org.kaazing.k3po.lang.internal.ast.AstChildOpenedNode;
 import org.kaazing.k3po.lang.internal.ast.AstCloseNode;
 import org.kaazing.k3po.lang.internal.ast.AstClosedNode;
+import org.kaazing.k3po.lang.internal.ast.AstCommentNode;
+import org.kaazing.k3po.lang.internal.ast.AstCommentStreamableNode;
 import org.kaazing.k3po.lang.internal.ast.AstConnectNode;
 import org.kaazing.k3po.lang.internal.ast.AstConnectedNode;
 import org.kaazing.k3po.lang.internal.ast.AstDisconnectNode;
@@ -353,4 +356,15 @@ public class ValidateStreamsVisitor implements AstNode.Visitor<AstScriptNode, Va
                 .toString().trim(), state.writeState);
     }
 
+    @Override
+    public AstScriptNode visit(AstCommentNode node, State parameter) throws Exception {
+        // For the moment, ignore the comment node
+        return null;
+    }
+
+    @Override
+    public AstScriptNode visit(AstCommentStreamableNode node, State parameter) throws Exception {
+        // For the moment, ignore the comment node
+        return null;
+    }
 }
