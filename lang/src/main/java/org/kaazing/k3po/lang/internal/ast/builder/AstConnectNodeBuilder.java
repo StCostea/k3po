@@ -156,6 +156,11 @@ public final class AstConnectNodeBuilder extends AbstractAstConnectNodeBuilder<A
     }
 
     @Override
+    public AstCommentStreamableNodeBuilder.StreamNested<AstConnectNodeBuilder> addComment() {
+        return new AstCommentStreamableNodeBuilder.StreamNested<>(this);
+    }
+
+    @Override
     public AstConnectNode done() {
         return result;
     }
@@ -304,6 +309,11 @@ public final class AstConnectNodeBuilder extends AbstractAstConnectNodeBuilder<A
         @Override
         public AstWriteOptionNodeBuilder.StreamNested<ScriptNested<R>> addWriteOption() {
             return new AstWriteOptionNodeBuilder.StreamNested<>(this);
+        }
+
+        @Override
+        public AstCommentStreamableNodeBuilder.StreamNested<ScriptNested<R>> addComment() {
+            return new AstCommentStreamableNodeBuilder.StreamNested<>(this);
         }
 
         @Override

@@ -24,6 +24,8 @@ import org.kaazing.k3po.lang.internal.ast.AstScriptNode;
 import org.kaazing.k3po.lang.internal.ast.builder.AstScriptNodeBuilder;
 import org.kaazing.k3po.lang.internal.ast.value.AstLocation;
 import org.kaazing.k3po.lang.internal.ast.value.AstLocationLiteral;
+import org.kaazing.k3po.lang.internal.el.ExpressionContext;
+import static org.junit.Assert.assertEquals;
 
 public class CommentsTest {
 
@@ -33,7 +35,7 @@ public class CommentsTest {
         // @formatter:off
         String script =
                 "# tcp.client.connect-then-close\n" +
-                "property reqXorRelayedAddressIp 'not used' # not used\n" +
+//                "property reqXorRelayedAddressIp 'not used' # not used\n" +
                 "connect tcp://localhost:7788 " +
                 "# Comment 1\n" +
                 "\t\t # Comment 2\n" +
@@ -49,10 +51,30 @@ public class CommentsTest {
         AstLocation location = new AstLocationLiteral(URI.create("tcp://localhost:7788"));
 
         AstScriptNode expected =
-                new AstScriptNodeBuilder().addConnectStream().setLocation(location)
-                        .addConnectedEvent().done().addCloseCommand().done().addClosedEvent().done().done().done();
+                new AstScriptNodeBuilder().addCommentStream().setCommentText(" tcp.client.connect-then-close").done()
+//                        .addProperty().setOptionName("reqXorRelayedAddressIp").setPropertyValue("not used").done()
+                        .addConnectStream().setLocation(location)
+                        .addComment().setCommentText(" Comment 1").done()
+                        .addComment().setCommentText(" Comment 2").done()
+                        .addConnectedEvent().done()
+                        .addComment().setCommentText(" c3").done()
+                        .addWriteCommand().addExactBytes(new byte[] {(byte)0x00, (byte)0x0b, (byte)0x00, (byte)0x54}).done()
+                        .addComment().setCommentText(" write comment").done()
+                        .addReadEvent().addExactBytes(new byte[] {(byte)0x01, (byte)0x0b, (byte)0x00, (byte)0x40}, new ExpressionContext()).done()
+                        .addComment().setCommentText(" read comment").done()
+                        .addCloseCommand().done()
+                        .addComment().setCommentText(" c4").done()
+                        .addClosedEvent().done()
+                        .addComment().setCommentText(" c5").done()
+                        .done().done();
 
-        //assertEquals(expected, actual);
         System.out.println(actual.toString());
+        System.out.println("-----\n" + expected.toString());
+
+//        System.out.println("----\n" + expected.toString());
+//        actual = parser.parseWithStrategy(expected.toString(), SCRIPT);
+//        System.out.println("----\n" + actual.toString());
+        
+        assertEquals(expected, actual);
     }
 }

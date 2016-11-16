@@ -71,6 +71,6 @@ public class AstCommentNode extends AstStreamNode {
     @Override
     protected void describeLine(StringBuilder sb) {
         super.describeLine(sb);
-        sb.append(commentText);
+        sb.append("#" + commentText + "\n");
     }
 }

@@ -43,6 +43,10 @@ public class AstScriptNodeBuilder extends AbstractAstNodeBuilder<AstScriptNode, 
         return new AstConnectNodeBuilder.ScriptNested<>(this);
     }
 
+    public AstCommentNodeBuilder.ScriptNested<AstScriptNodeBuilder> addCommentStream() {
+        return new AstCommentNodeBuilder.ScriptNested<>(this);
+    }
+
     @Override
     public AstScriptNode done() {
         return node;

@@ -1634,7 +1634,18 @@ public abstract class ScriptParseStrategy<T extends AstRegion> {
         @Override
         public AstCommentNode visitCommentNode(CommentNodeContext ctx) {
             node = new AstCommentNode();
-            node.setCommentText(ctx.getText());
+            String text = ctx.getText();
+            int startPos = 0;
+            int endPos = text.length();
+            if (text.charAt(0) == '#')
+                startPos++;
+            if (text.charAt(endPos-1) == '\n') {
+                endPos--;
+                if (text.charAt(endPos-2) == '\r')
+                    endPos--;
+            }
+
+            node.setCommentText(text.substring(startPos, endPos));
             node.setRegionInfo(asSequentialRegion(childInfos, ctx));
             return node;
         }
@@ -1650,7 +1661,18 @@ public abstract class ScriptParseStrategy<T extends AstRegion> {
         @Override
         public AstCommentStreamableNode visitCommentStreamableNode(CommentStreamableNodeContext ctx) {
             node = new AstCommentStreamableNode();
-            node.setCommentText(ctx.getText());
+            String text = ctx.getText();
+            int startPos = 0;
+            int endPos = text.length();
+            if (text.charAt(0) == '#')
+                startPos++;
+            if (text.charAt(endPos-1) == '\n') {
+                endPos--;
+                if (text.charAt(endPos-2) == '\r')
+                    endPos--;
+            }
+
+            node.setCommentText(text.substring(startPos, endPos));
             node.setRegionInfo(asSequentialRegion(childInfos, ctx));
             return node;
         }

@@ -66,6 +66,6 @@ public class AstCommentStreamableNode extends AstStreamableNode {
     @Override
     protected void describe(StringBuilder buf) {
         super.describe(buf);
-        buf.append(commentText);
+        buf.append("#" + commentText + "\n");
     }
 }

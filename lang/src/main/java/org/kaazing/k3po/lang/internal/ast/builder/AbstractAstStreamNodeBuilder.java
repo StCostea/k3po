@@ -20,6 +20,7 @@ import org.kaazing.k3po.lang.internal.ast.AstAbortedNode;
 import org.kaazing.k3po.lang.internal.ast.AstBoundNode;
 import org.kaazing.k3po.lang.internal.ast.AstCloseNode;
 import org.kaazing.k3po.lang.internal.ast.AstClosedNode;
+import org.kaazing.k3po.lang.internal.ast.AstCommentStreamableNode;
 import org.kaazing.k3po.lang.internal.ast.AstConnectedNode;
 import org.kaazing.k3po.lang.internal.ast.AstDisconnectNode;
 import org.kaazing.k3po.lang.internal.ast.AstDisconnectedNode;
@@ -117,4 +118,7 @@ public abstract class AbstractAstStreamNodeBuilder<T extends AstStreamNode, R> e
 
     public abstract AbstractAstStreamableNodeBuilder<AstWriteOptionNode, ? extends AbstractAstStreamNodeBuilder<T, R>>
         addWriteOption();
+
+    public abstract AbstractAstStreamableNodeBuilder<AstCommentStreamableNode, ? extends AbstractAstStreamNodeBuilder<T, R>>
+        addComment();
 }
