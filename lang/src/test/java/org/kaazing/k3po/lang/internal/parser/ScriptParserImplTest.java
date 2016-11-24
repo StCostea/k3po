@@ -1225,8 +1225,8 @@ public class ScriptParserImplTest {
         ScriptParserImpl parser = new ScriptParserImpl();
         AstScriptNode actual = parser.parseWithStrategy(script, SCRIPT);
         AstLocation location = new AstLocationLiteral(URI.create("http://localhost:8080/path?p1=v1&p2=v2"));
-        AstScriptNode expected =
-                new AstScriptNodeBuilder().addConnectStream().setLocation(location)
+        AstScriptNode expected = new AstScriptNodeBuilder().addCommentStream().setCommentText(" tcp.client.connect-then-close").done()
+                        .addConnectStream().setLocation(location)
                         .addConnectedEvent().done().addCloseCommand().done().addClosedEvent().done().done().done();
 
         assertEquals(expected, actual);
@@ -1251,6 +1251,7 @@ public class ScriptParserImplTest {
 
         // @formatter:off
          AstScriptNode expected = new AstScriptNodeBuilder()
+                 .addCommentStream().setCommentText(" tcp.client.connect-then-close").done()
                  .addConnectStream()
                      .setLocation(location)
                      .setBarrier("BARRIER")
@@ -1279,7 +1280,9 @@ public class ScriptParserImplTest {
         AstLocation location = new AstLocationLiteral(URI.create("tcp://localhost:7788"));
 
         AstScriptNode expected =
-                new AstScriptNodeBuilder().addConnectStream().setLocation(location)
+                new AstScriptNodeBuilder().addCommentStream().setCommentText(" tcp.client.connect-then-close")
+                        .done().addConnectStream().setLocation(location).addComment().setCommentText(" Comment 1").done()
+                        .addComment().setCommentText(" Comment 2").done()
                         .addConnectedEvent().done().addCloseCommand().done().addClosedEvent().done().done().done();
 
         assertEquals(expected, actual);
@@ -1323,8 +1326,8 @@ public class ScriptParserImplTest {
         ScriptParserImpl parser = new ScriptParserImpl();
         AstScriptNode actual = parser.parseWithStrategy(script, SCRIPT);
 
-        AstScriptNode expected = new AstScriptNodeBuilder().addAcceptStream()
-                .setLocation(new AstLocationLiteral(URI.create("tcp://localhost:7788"))).done().addAcceptedStream()
+        AstScriptNode expected = new AstScriptNodeBuilder().addCommentStream().setCommentText(" tcp.client.accept-then-close").done()
+                .addAcceptStream().setLocation(new AstLocationLiteral(URI.create("tcp://localhost:7788"))).done().addAcceptedStream()
                 .addConnectedEvent().done().addCloseCommand().done().addClosedEvent().done().done().done();
 
         assertEquals(expected, actual);
@@ -1348,6 +1351,7 @@ public class ScriptParserImplTest {
         AstLocation transport = new AstLocationLiteral(URI.create("tcp://localhost:8000"));
 
         AstScriptNode expected = new AstScriptNodeBuilder()
+                .addCommentStream().setCommentText(" tcp.client.accept-then-close").done()
                 .addAcceptStream()
                     .setLocation(location)
                     .setTransport(transport)
@@ -1365,8 +1369,7 @@ public class ScriptParserImplTest {
     @Test
     public void shouldParseMultiConnectScript() throws Exception {
 
-        String script =
-                "# tcp.client.echo-multi-conn.upstream\n" + "connect tcp://localhost:8785\n" + "connected\n"
+        String script = "# tcp.client.echo-multi-conn.upstream\n" + "connect tcp://localhost:8785\n" + "connected\n"
                         + "write \"Hello, world!\"\n" + "write notify BARRIER\n" + "close\n" + "closed\n"
                         + "# tcp.client.echo-multi-conn.downstream\n" + "connect tcp://localhost:8783\n" + "connected\n"
                         + "read await BARRIER\n" + "read \"Hello, world!\"\n" + "close\n" + "closed\n";
@@ -1377,10 +1380,12 @@ public class ScriptParserImplTest {
         AstLocation location8783 = new AstLocationLiteral(URI.create("tcp://localhost:8783"));
 
         AstScriptNode expected =
-                new AstScriptNodeBuilder().addConnectStream().setLocation(location8785)
+                new AstScriptNodeBuilder().addCommentStream().setCommentText(" tcp.client.echo-multi-conn.upstream").done()
+                        .addConnectStream().setLocation(location8785)
                         .addConnectedEvent().done().addWriteCommand().addExactText("Hello, world!").done()
                         .addWriteNotifyBarrier().setBarrierName("BARRIER").done().addCloseCommand().done().addClosedEvent()
-                        .done().done().addConnectStream().setLocation(location8783).addConnectedEvent()
+                        .done().addComment().setCommentText(" tcp.client.echo-multi-conn.downstream").done().done()
+                        .addConnectStream().setLocation(location8783).addConnectedEvent()
                         .done().addReadAwaitBarrier().setBarrierName("BARRIER").done().addReadEvent()
                         .addExactText("Hello, world!").done().addCloseCommand().done().addClosedEvent().done().done().done();
 
@@ -1399,10 +1404,12 @@ public class ScriptParserImplTest {
         ScriptParserImpl parser = new ScriptParserImpl();
         AstScriptNode actual = parser.parseWithStrategy(script, SCRIPT);
 
-        AstScriptNode expected = new AstScriptNodeBuilder().addAcceptStream()
+        AstScriptNode expected = new AstScriptNodeBuilder().addCommentStream().setCommentText(" tcp.server.echo-multi-conn.upstream").done()
+                .addAcceptStream()
                 .setLocation(new AstLocationLiteral(URI.create("tcp://localhost:8783"))).done().addAcceptedStream()
                 .addConnectedEvent().done().addReadAwaitBarrier().setBarrierName("BARRIER").done().addReadEvent()
-                .addExactText("Hello, world!").done().addCloseCommand().done().addClosedEvent().done().done()
+                .addExactText("Hello, world!").done().addCloseCommand().done().addClosedEvent().done()
+                .addComment().setCommentText(" tcp.server.echo-multi-conn.downstream").done().done()
                 .addAcceptStream().setLocation(new AstLocationLiteral(URI.create("tcp://localhost:8785"))).done()
                 .addAcceptedStream().addConnectedEvent().done().addWriteCommand().addExactText("Hello, world!").done()
                 .addWriteNotifyBarrier().setBarrierName("BARRIER").done().addCloseCommand().done().addClosedEvent()
@@ -1422,9 +1429,11 @@ public class ScriptParserImplTest {
         ScriptParserImpl parser = new ScriptParserImpl();
         AstLocation location7788 = new AstLocationLiteral(URI.create("tcp://localhost:7788"));
         AstScriptNode actual = parser.parseWithStrategy(script, SCRIPT);
-        AstScriptNode expected = new AstScriptNodeBuilder().addAcceptStream()
+        AstScriptNode expected = new AstScriptNodeBuilder().addCommentStream().setCommentText(" tcp.server.accept-then-close").done()
+                .addAcceptStream()
                 .setLocation(new AstLocationLiteral(URI.create("tcp://localhost:7788"))).done().addAcceptedStream()
-                .addConnectedEvent().done().addClosedEvent().done().done().addConnectStream().setLocation(location7788)
+                .addConnectedEvent().done().addClosedEvent().done().addComment().setCommentText(" tcp.client.connect-then-close").done()
+                .done().addConnectStream().setLocation(location7788)
                 .addConnectedEvent().done().addCloseCommand().done().addClosedEvent().done().done().done();
         assertEquals(expected, actual);
     }
@@ -1440,8 +1449,8 @@ public class ScriptParserImplTest {
         ScriptParserImpl parser = new ScriptParserImpl();
         AstScriptNode actual = parser.parseWithStrategy(script, SCRIPT);
         AstLocation location7788 = new AstLocationLiteral(URI.create("tcp://localhost:7788"));
-        AstScriptNode expected =
-                new AstScriptNodeBuilder().addConnectStream().setLocation(location7788)
+        AstScriptNode expected = new AstScriptNodeBuilder().addCommentStream().setCommentText(" tcp.client.non-closing").done()
+                        .addConnectStream().setLocation(location7788)
                         .addConnectedEvent().done().addReadEvent().addExactText("foo").done().addWriteCommand()
                         .addExactBytes(new byte[]{0x01, 0x02, (byte) 0xff}).done().addClosedEvent().done().done().done();
 
@@ -1469,7 +1478,9 @@ public class ScriptParserImplTest {
         ScriptParserImpl parser = new ScriptParserImpl();
         AstScriptNode actual = parser.parseWithStrategy(script, SCRIPT);
 
-        AstScriptNode expected = new AstScriptNode();
+        AstScriptNode expected = new AstScriptNodeBuilder().addCommentStream().setCommentText(" Comment 1").done()
+                .addCommentStream().setCommentText(" Comment 2").done()
+                .addCommentStream().setCommentText(" Comment 3").done().done();
 
         assertEquals(expected, actual);
     }
@@ -1482,7 +1493,9 @@ public class ScriptParserImplTest {
         ScriptParserImpl parser = new ScriptParserImpl();
         AstScriptNode actual = parser.parseWithStrategy(script, SCRIPT);
 
-        AstScriptNode expected = new AstScriptNode();
+        AstScriptNode expected = new AstScriptNodeBuilder().addCommentStream().setCommentText(" Comment 1").done()
+                .addCommentStream().setCommentText(" Comment 2").done()
+                .addCommentStream().setCommentText(" Comment 3").done().done();
 
         assertEquals(expected, actual);
     }
