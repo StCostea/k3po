@@ -1641,7 +1641,7 @@ public abstract class ScriptParseStrategy<T extends AstRegion> {
                 startPos++;
             if (text.charAt(endPos-1) == '\n') {
                 endPos--;
-                if (text.charAt(endPos-2) == '\r')
+                if (endPos > 2 && text.charAt(endPos-2) == '\r')
                     endPos--;
             }
 
@@ -1668,7 +1668,7 @@ public abstract class ScriptParseStrategy<T extends AstRegion> {
                 startPos++;
             if (text.charAt(endPos-1) == '\n') {
                 endPos--;
-                if (text.charAt(endPos-2) == '\r')
+                if (endPos > 2 && text.charAt(endPos-2) == '\r')
                     endPos--;
             }
 
