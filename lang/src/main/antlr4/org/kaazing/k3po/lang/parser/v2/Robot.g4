@@ -129,7 +129,7 @@ commandNode
     | writeHttpHostNode
     | writeHttpMethodNode
     | writeHttpParameterNode
-    | writeHttpRequestNode
+    | writeHttpUriNode
     | writeHttpStatusNode
     | writeHttpVersionNode
     | abortNode
@@ -297,10 +297,10 @@ readHttpStatusNode
     : k=ReadKeyword HttpStatusKeyword code=matcher reason=matcher
     ;
 
-writeHttpRequestNode
-    : k=WriteKeyword HttpRequestKeyword form=writeValue
+writeHttpUriNode
+    : k=WriteKeyword HttpUriKeyword (AbsoluteFormKeyword | OriginFormKeyword)
     ;
-
+    
 writeHttpStatusNode
     : k=WriteKeyword HttpStatusKeyword code=writeValue reason=writeValue
     ;
@@ -549,9 +549,17 @@ HttpParameterKeyword
     : 'parameter'
     ;
 
-HttpRequestKeyword
-    : 'request'
+HttpUriKeyword
+    : 'uri'
     ;
+
+AbsoluteFormKeyword
+	: 'absolute-form'
+	;
+
+OriginFormKeyword
+	: 'origin-form'
+	;
 
 HttpResponseKeyword
     : 'response'

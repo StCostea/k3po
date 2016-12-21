@@ -154,8 +154,8 @@ import org.kaazing.k3po.lang.parser.v2.RobotParser.WriteHttpHeaderNodeContext;
 import org.kaazing.k3po.lang.parser.v2.RobotParser.WriteHttpHostNodeContext;
 import org.kaazing.k3po.lang.parser.v2.RobotParser.WriteHttpMethodNodeContext;
 import org.kaazing.k3po.lang.parser.v2.RobotParser.WriteHttpParameterNodeContext;
-import org.kaazing.k3po.lang.parser.v2.RobotParser.WriteHttpRequestNodeContext;
 import org.kaazing.k3po.lang.parser.v2.RobotParser.WriteHttpStatusNodeContext;
+import org.kaazing.k3po.lang.parser.v2.RobotParser.WriteHttpUriNodeContext;
 import org.kaazing.k3po.lang.parser.v2.RobotParser.WriteHttpVersionNodeContext;
 import org.kaazing.k3po.lang.parser.v2.RobotParser.WriteNodeContext;
 import org.kaazing.k3po.lang.parser.v2.RobotParser.WriteNotifyNodeContext;
@@ -454,12 +454,12 @@ public abstract class ScriptParseStrategy<T extends AstRegion> {
                 }
             };
 
-    public static final ScriptParseStrategy<AstWriteConfigNode> WRITE_HTTP_REQUEST =
+    public static final ScriptParseStrategy<AstWriteConfigNode> WRITE_HTTP_URI_FORM =
             new ScriptParseStrategy<AstWriteConfigNode>() {
                 @Override
                 public AstWriteConfigNode parse(RobotParser parser, ExpressionFactory elFactory, ExpressionContext elContext)
                         throws RecognitionException {
-                    return new AstWriteConfigNodeVisitor(elFactory, elContext).visit(parser.writeHttpRequestNode());
+                    return new AstWriteConfigNodeVisitor(elFactory, elContext).visit(parser.writeHttpUriNode());
                 }
             };
 
@@ -1479,10 +1479,10 @@ public abstract class ScriptParseStrategy<T extends AstRegion> {
         // HTTP commands
 
         @Override
-        public AstWriteConfigNode visitWriteHttpRequestNode(WriteHttpRequestNodeContext ctx) {
+        public AstWriteConfigNode visitWriteHttpUriNode(WriteHttpUriNodeContext ctx) {
 
             AstWriteConfigNodeVisitor visitor = new AstWriteConfigNodeVisitor(elFactory, elContext);
-            AstWriteConfigNode writeHttpRequestNode = visitor.visitWriteHttpRequestNode(ctx);
+            AstWriteConfigNode writeHttpRequestNode = visitor.visitWriteHttpUriNode(ctx);
             if (writeHttpRequestNode != null) {
                 childInfos().add(writeHttpRequestNode.getRegionInfo());
             }
@@ -2445,16 +2445,14 @@ public abstract class ScriptParseStrategy<T extends AstRegion> {
         }
 
         @Override
-        public AstWriteConfigNode visitWriteHttpRequestNode(WriteHttpRequestNodeContext ctx) {
-
-            AstValueVisitor visitor = new AstValueVisitor(elFactory, elContext);
-            AstValue value = visitor.visit(ctx.form);
-            childInfos().add(value.getRegionInfo());
-
+        public AstWriteConfigNode visitWriteHttpUriNode(WriteHttpUriNodeContext ctx) {
             node = new AstWriteConfigNode();
             node.setRegionInfo(asSequentialRegion(childInfos, ctx));
-            node.setType("request");
-            node.setValue("form", value);
+            
+            if (ctx.OriginFormKeyword() != null)
+                node.setType("origin-form");
+            else if (ctx.AbsoluteFormKeyword() != null)
+                node.setType("absolute-form");
 
             return node;
         }

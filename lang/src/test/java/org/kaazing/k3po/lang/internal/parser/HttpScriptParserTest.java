@@ -30,7 +30,7 @@ import static org.kaazing.k3po.lang.internal.parser.ScriptParseStrategy.WRITE_HT
 import static org.kaazing.k3po.lang.internal.parser.ScriptParseStrategy.WRITE_HTTP_HOST;
 import static org.kaazing.k3po.lang.internal.parser.ScriptParseStrategy.WRITE_HTTP_METHOD;
 import static org.kaazing.k3po.lang.internal.parser.ScriptParseStrategy.WRITE_HTTP_PARAMETER;
-import static org.kaazing.k3po.lang.internal.parser.ScriptParseStrategy.WRITE_HTTP_REQUEST;
+import static org.kaazing.k3po.lang.internal.parser.ScriptParseStrategy.WRITE_HTTP_URI_FORM;
 import static org.kaazing.k3po.lang.internal.parser.ScriptParseStrategy.WRITE_HTTP_STATUS;
 import static org.kaazing.k3po.lang.internal.parser.ScriptParseStrategy.WRITE_HTTP_VERSION;
 import static org.kaazing.k3po.lang.internal.test.junit.Assert.assertEquals;
@@ -63,39 +63,37 @@ public class HttpScriptParserTest {
     @Test
     public void shouldParseWriteHttpRequestOriginForm() throws Exception {
 
-        String scriptFragment = "write request \"origin-form\"";
+        String scriptFragment = "write uri origin-form";
 
         ScriptParserImpl parser = new ScriptParserImpl();
-        AstWriteConfigNode actual = parser.parseWithStrategy(scriptFragment, WRITE_HTTP_REQUEST);
+        AstWriteConfigNode actual = parser.parseWithStrategy(scriptFragment, WRITE_HTTP_URI_FORM);
 
         // @formatter:off
         AstWriteConfigNode expected = new AstWriteConfigNodeBuilder()
-            .setType("request")
-            .setValue("form", "origin-form")
+            .setType("origin-form")
         .done();
         // @formatter:on
 
         assertEquals(expected, actual);
-        assertEquals(1, actual.getRegionInfo().children.size());
+        assertEquals(0, actual.getRegionInfo().children.size());
     }
 
     @Test
     public void shouldParseWriteHttpRequestAbsoluteForm() throws Exception {
 
-        String scriptFragment = "write request \"absolute-form\"";
+        String scriptFragment = "write uri absolute-form";
 
         ScriptParserImpl parser = new ScriptParserImpl();
-        AstWriteConfigNode actual = parser.parseWithStrategy(scriptFragment, WRITE_HTTP_REQUEST);
+        AstWriteConfigNode actual = parser.parseWithStrategy(scriptFragment, WRITE_HTTP_URI_FORM);
 
         // @formatter:off
         AstWriteConfigNode expected = new AstWriteConfigNodeBuilder()
-            .setType("request")
-            .setValue("form", "absolute-form")
+            .setType("absolute-form")
         .done();
         // @formatter:on
 
         assertEquals(expected, actual);
-        assertEquals(1, actual.getRegionInfo().children.size());
+        assertEquals(0, actual.getRegionInfo().children.size());
     }
 
     @Test
